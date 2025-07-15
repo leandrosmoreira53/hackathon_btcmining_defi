@@ -1,4 +1,4 @@
-# ⚡ ASIC S21+ Tokenization DApp
+# ⚡ MinerFi: ASIC S21+ Tokenization DApp
 
 An innovative mini-app built on the **Base Network** that tokenizes a **real Antminer S21+ mining machine**, allowing you to buy fractions of **20 TH/s** with a **daily ROI of $1 USD** per fraction.
 
