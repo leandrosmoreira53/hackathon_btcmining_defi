@@ -1,13 +1,126 @@
 # ⚡ MinerFi: ASIC S21+ Tokenization DApp
 
+**Project Name:** MinerFi
+
+**Core Idea:** Tokenize real-world Bitcoin mining operations (RWA - Real World Asset), allowing investors to acquire tokenized computing power (TH/s) and receive Bitcoin yield directly into their wallets via blockchain. The mined yield is converted into cbBTC (Bitcoin tokenized on the Base network) and automatically distributed. The token can also be used as collateral in DeFi protocols.
+
+**Real Problem Solved:** Democratizes access to Bitcoin mining, currently restricted to large players due to high infrastructure, energy, and equipment costs. Reduces entry barriers for small investors and allows the mined yield to be used as DeFi collateral, increasing the liquidity and usability of mined Bitcoin.
+
+---
+
+## 🚀 User Journey in MinerFi
+
+### 1️⃣ Purchase Mining Power (TH/s)
+- The user accesses the MinerFi website.
+- Buys an NFT representing 18 TH/s (for example).
+- This NFT guarantees participation in a real operational mining machine.
+
+### 2️⃣ Mining Starts
+- The physical machine mines Bitcoin as normal.
+- The mining rewards are automatically converted into cbBTC (Bitcoin tokenized on the Base network).
+
+### 3️⃣ Daily Rewards
+- Every day, the user receives cbBTC directly into their wallet.
+- The amount depends on the TH/s purchased.
+
+### 4️⃣ User Options During the Operation
+- The user can:
+  - Withdraw their cbBTC.
+  - Use it as collateral in DeFi (e.g., borrow USDC in Aave).
+  - Automatically reinvest rewards to buy more TH/s (optional).
+  - Track everything via the dashboard.
+
+### 5️⃣ 3-Year Mining Cycle
+- Mining continues.
+- The user receives daily rewards.
+- The NFT (TH/s) can be resold or transferred at any time.
+
+### 6️⃣ End of Cycle (3 Years)
+- The machine reaches the end of its useful life.
+- The NFT loses its function.
+- The user returns (burns) their NFT.
+- Receives the resale value of the machine paid in cbBTC as a final payout.
+
+### 7️⃣ Closure
+- Contract ends.
+- The user receives 3 years of rewards + the machine’s resale value.
+- If desired, the user can buy new TH/s to start a new cycle.
+
+**✅ Summary:**
+Buy NFT ➔ Earn Bitcoin daily ➔ Optional DeFi usage ➔ Final payout after 3 years.
+
+---
+
 An innovative mini-app built on the **Base Network** that tokenizes a **real Antminer S21+ mining machine**, allowing you to buy fractions of **20 TH/s** with a **daily ROI of $1 USD** per fraction.
+
+## 🪙 Token Type and Function
+
+### Token Type:
+- **NFT (ERC-721)**: represents fixed hashrate lots (e.g., 18 TH/s).
+- **Utility Token (ERC-20)**: optional for smaller fractions (under development).
+
+### Token Function:
+- Represents the right to receive real mining yield.
+- Grants access to periodic rewards in cbBTC.
+- Serves as proof of participation in the mining infrastructure.
+
+### Investor Benefits:
+- Daily/weekly yield distribution in cbBTC (real yield).
+- Possibility to use the yield as collateral in DeFi protocols like Aave.
+- Easy access to the mining market.
+
+## 💲 Tokenomics Model
+
+### Total Supply:
+- 1,000 NFTs initially (each NFT = 18 TH/s).
+- Supply expandable as infrastructure scales.
+
+### Initial Distribution:
+- **60%** – Public Sale (buyers).
+- **20%** – Treasury (for expansion and maintenance).
+- **10%** – Founders and Team (24-month vesting).
+- **10%** – Liquidity Pool (for secondary market).
+
+### Staking: 
+Not applicable (the token itself generates yield via mining).
+
+### Burning: 
+At the end of the ASIC's lifecycle (3 years), the token loses its function.
+Users return (burn) the NFT TH/s and receive the machine's residual value (converted and minted as cbBTC). Burn of the token + final payout redemption.
+
+### Inflation: 
+No token inflation. New lots are only created when new machines are acquired.
+
+## 🎯 Incentives and Governance
+
+### How to Encourage Holding:
+- Daily cbBTC yield attached to the token.
+- DeFi integration for collateral use (Aave).
+- Possibility of post-borrow reinvestment (recommended health factor: 2.00).
+
+### Governance:
+- DAO planned for future expansion (MinerFi DAO).
+- Proposals: votes on infrastructure expansion, treasury use, distribution adjustments.
+
+## ⚖️ Risks and Regulation
+
+### Is the Token a Security?
+Potentially yes, depending on jurisdiction (Howey Test).
+Generates passive yield, which may attract security token regulations.
+
+### Measures to Avoid Legal Risks:
+- Positioning as a tokenized RWA (Real World Asset).
+- Yield backed by real-world mining operations.
+- Use of audited smart contracts.
+- Optional registration as an asset tokenization company (based on jurisdiction).
+- Geographical restrictions (optional KYC).
 
 ## 🌟 Main Features
 
 ### ⚡ Real ASIC Tokenization
 - **Antminer S21+**: Real machine with 216 TH/s total hashrate
-- **20 TH/s Fractions**: Each token represents 20 TH/s (~9.26% of the machine)
-- **Daily ROI**: $1 USD per 20 TH/s fraction per day
+- **20 TH/s Fractions**: Each token represents 18 TH/s (~9.26% of the machine)
+- **Daily ROI**: $1 USD per 18 TH/s fraction per day
 - **Full Transparency**: Fractional ownership verifiable on-chain
 
 ### 🏦 DeFi Integration with Aave
@@ -152,13 +265,13 @@ npm run lint                     # Linting
 ## 📊 Business Model - Real Parameters
 
 ### 💰 Initial Investment
-- **Minimum Entry**: 20 TH = US$700 (US$35/TH)
+- **Minimum Entry**: 18 TH = US$700 (US$35/TH)
 - **Equipment**: Bitmain Antminer S21+ (216 TH total)
 - **Location**: Paraguay (cheap energy)
 - **Operational Markup**: 5%
 
 ### 📈 Return on Investment
-- **Daily Profit**: US$1.50/day per 20 TH package
+- **Daily Profit**: US$1.50/day per 18 TH package
 - **Profit per TH**: US$0.075/TH/day
 - **Annual ROI**: 77%
 - **Breakeven**: 15.5 months (without DeFi)
