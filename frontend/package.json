@@ -1,0 +1,36 @@
+{
+  "name": "mining-cbbtc-frontend",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "start": "vite"
+  },
+  "keywords": [
+    "cbBTC",
+    "mining",
+    "base-network",
+    "defi",
+    "aave"
+  ],
+  "author": "",
+  "license": "MIT",
+  "description": "Frontend for cbBTC Mining Tokenization DApp on Base Network",
+  "dependencies": {
+    "@coinbase/wallet-sdk": "^4.3.4",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "buffer": "^6.0.3",
+    "process": "^0.11.10",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "typescript": "^5.8.3",
+    "web3": "^4.16.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.6.0",
+    "vite": "^5.4.19"
+  }
+}
