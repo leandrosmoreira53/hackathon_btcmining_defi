@@ -35,7 +35,7 @@ contract SecureTokenizedMining is
     // Business Model Parameters (immutable for security)
     uint256 public constant PRECO_INICIAL_TH = 35e6; // US$35 per TH (6 decimals USDC)
     uint256 public constant LUCRO_DIARIO_BASE = 75000; // US$0.075 per TH per day (6 decimals USDC)
-    uint256 public constant ENTRADA_MINIMA_TH = 20; // 20 TH minimum
+    uint256 public constant ENTRADA_MINIMA_TH = 18; // 18 TH minimum
     uint256 public constant ENTRADA_MAXIMA_TH = 50; // 50 TH maximum per transaction
     uint256 public constant TOTAL_HASHRATE = 216; // 216 TH/s total
     

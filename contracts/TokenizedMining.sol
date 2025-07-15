@@ -17,7 +17,7 @@ contract TokenizedMining is ERC721, ERC721Enumerable, Ownable, ReentrancyGuard, 
     uint256 public constant PRECO_INICIAL_TH = 35e6; // US$35 per TH (6 decimals USDC)
     uint256 public constant LUCRO_DIARIO_BASE = 75000; // US$0.075 per TH per day (6 decimals USDC)
     uint256 public constant MARKUP_PERCENTUAL = 5; // 5%
-    uint256 public constant ENTRADA_MINIMA_TH = 20; // 20 TH minimum
+    uint256 public constant ENTRADA_MINIMA_TH = 18; // 18 TH minimum
     uint256 public constant ENTRADA_MINIMA_USD = 700e6; // US$700 (6 decimals USDC)
     uint256 public constant ROI_ANUAL = 77; // 77%
     uint256 public constant BREAKEVEN_DIAS = 466; // 15.5 months * 30 days

@@ -3,12 +3,34 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "compile": "npx hardhat compile",
+    "test": "npx hardhat test",
+    "deploy": "npx hardhat run scripts/deployComplete.ts --network base",
+    "deploy:testnet": "npx hardhat run scripts/deployComplete.ts --network base_sepolia",
+    "btc-service": "ts-node scripts/btc-cbbtc-service.ts",
+    "start-automation": "npm run btc-service start",
+    "stop-automation": "npm run btc-service stop",
+    "service-status": "npm run btc-service status",
+    "verify": "npx hardhat verify --network base",
+    "node": "npx hardhat node",
+    "console": "npx hardhat console",
+    "frontend": "cd frontend && npm start",
+    "frontend:build": "cd frontend && npm run build",
+    "frontend:install": "cd frontend && npm install"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "keywords": [
+    "bitcoin",
+    "mining",
+    "cbbtc",
+    "defi",
+    "aave",
+    "chainlink",
+    "base-network",
+    "tokenization"
+  ],
+  "author": "MinerFi Team",
+  "license": "MIT",
+  "description": "Complete Bitcoin Mining Tokenization DApp with cbBTC, Aave integration, and automated systems",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^6.0.0",
     "@types/node": "^24.0.10",
@@ -21,6 +43,7 @@
   "dependencies": {
     "@chainlink/contracts": "^1.4.0",
     "@openzeppelin/contracts": "^5.3.0",
+    "axios": "^1.7.0",
     "dotenv": "^17.0.1"
   }
 }

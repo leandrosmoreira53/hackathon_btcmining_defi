@@ -10,7 +10,7 @@ export const CleanMiningInterface: React.FC<CleanMiningInterfaceProps> = ({
   web3Service,
   userAddress
 }) => {
-  const [thAmount, setThAmount] = useState<string>('20');
+  const [thAmount, setThAmount] = useState<string>('18');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -18,7 +18,7 @@ export const CleanMiningInterface: React.FC<CleanMiningInterfaceProps> = ({
   // Mining parameters
   const pricePerTH = 35; // $35 per TH
   const dailyROI = 0.075; // $0.075 per TH per day
-  const minTH = 20;
+  const minTH = 18;
   const maxTH = 50;
 
   const calculateCost = (th: number) => th * pricePerTH;
@@ -44,7 +44,7 @@ export const CleanMiningInterface: React.FC<CleanMiningInterfaceProps> = ({
       await new Promise(resolve => setTimeout(resolve, 2000));
       
       setSuccess(`Successfully purchased ${th} TH! You'll earn $${calculateDailyEarnings(th).toFixed(2)}/day`);
-      setThAmount('20');
+      setThAmount('18');
     } catch (err: any) {
       setError(err.message || 'Purchase failed');
     } finally {
@@ -154,10 +154,10 @@ export const CleanMiningInterface: React.FC<CleanMiningInterfaceProps> = ({
                 
                 <div className="quick-select">
                   <button 
-                    onClick={() => setThAmount('20')}
-                    className={`quick-btn ${thAmount === '20' ? 'active' : ''}`}
+                    onClick={() => setThAmount('18')}
+                    className={`quick-btn ${thAmount === '18' ? 'active' : ''}`}
                   >
-                    20 TH
+                    18 TH
                   </button>
                   <button 
                     onClick={() => setThAmount('30')}

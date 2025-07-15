@@ -32,11 +32,11 @@ export const AsicMiningDashboard: React.FC<AsicMiningDashboardProps> = ({
   const [asicInfo, setAsicInfo] = useState<AsicInfo>({
     model: "Antminer S21+",
     totalHashRate: 216, // 216 TH/s
-    fractionHashRate: 20, // 20 TH/s per fraction
-    totalFractions: 10.8, // 216/20 = 10.8 fractions total
+    fractionHashRate: 18, // 18 TH/s per fraction
+    totalFractions: 12, // 216/18 = 12 fractions total
     availableFractions: 8.2, // Available for purchase
-    dailyRoi: 1.0, // $1 USD per day per fraction
-    pricePerFraction: 2500 // $2500 USD per 20 TH/s fraction
+    dailyRoi: 0.9, // $0.90 USD per day per fraction
+    pricePerFraction: 630 // $630 USD per 18 TH/s fraction
   });
 
   const [userPosition, setUserPosition] = useState<UserPosition>({
@@ -57,9 +57,9 @@ export const AsicMiningDashboard: React.FC<AsicMiningDashboardProps> = ({
   useEffect(() => {
     // Simulate user having some fractions
     setUserPosition({
-      ownedFractions: 1.5, // User owns 1.5 fractions (30 TH/s)
-      totalHashRateOwned: 30, // 1.5 * 20 TH/s
-      dailyEarnings: 1.5, // $1.50 per day
+      ownedFractions: 1.5, // User owns 1.5 fractions (27 TH/s)
+      totalHashRateOwned: 27, // 1.5 * 18 TH/s
+      dailyEarnings: 1.35, // $1.35 per day
       totalEarned: 45.0, // $45 total earned
       lastClaimTime: Date.now() - 86400000 // Last claim 1 day ago
     });

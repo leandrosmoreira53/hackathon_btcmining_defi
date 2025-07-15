@@ -51,7 +51,7 @@ Buy NFT ➔ Earn Bitcoin daily ➔ Optional DeFi usage ➔ Final payout after 3 
 
 ---
 
-An innovative mini-app built on the **Base Network** that tokenizes a **real Antminer S21+ mining machine**, allowing you to buy fractions of **20 TH/s** with a **daily ROI of $1 USD** per fraction.
+An innovative mini-app built on the **Base Network** that tokenizes a **real Antminer S21+ mining machine**, allowing you to buy fractions of **18 TH/s** with a **daily ROI of $0.90 USD** per fraction.
 
 ## 🪙 Token Type and Function
 
@@ -119,8 +119,8 @@ Generates passive yield, which may attract security token regulations.
 
 ### ⚡ Real ASIC Tokenization
 - **Antminer S21+**: Real machine with 216 TH/s total hashrate
-- **20 TH/s Fractions**: Each token represents 18 TH/s (~9.26% of the machine)
-- **Daily ROI**: $1 USD per 18 TH/s fraction per day
+- **18 TH/s Fractions**: Each token represents 18 TH/s (~8.33% of the machine)
+- **Daily ROI**: $0.90 per 18 TH/s fraction per day
 - **Full Transparency**: Fractional ownership verifiable on-chain
 
 ### 🏦 DeFi Integration with Aave
@@ -265,13 +265,13 @@ npm run lint                     # Linting
 ## 📊 Business Model - Real Parameters
 
 ### 💰 Initial Investment
-- **Minimum Entry**: 18 TH = US$700 (US$35/TH)
+- **Minimum Entry**: 18 TH = US$630 (US$35/TH)
 - **Equipment**: Bitmain Antminer S21+ (216 TH total)
 - **Location**: Paraguay (cheap energy)
 - **Operational Markup**: 5%
 
 ### 📈 Return on Investment
-- **Daily Profit**: US$1.50/day per 18 TH package
+- **Daily Profit**: US$1.35/day per 18 TH package
 - **Profit per TH**: US$0.075/TH/day
 - **Annual ROI**: 77%
 - **Breakeven**: 15.5 months (without DeFi)

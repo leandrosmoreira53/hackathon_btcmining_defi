@@ -45,10 +45,10 @@ export const BusinessModelDashboard: React.FC<BusinessModelDashboardProps> = ({
     lucro_diario_base: 0.075,
     markup_percentual: 5,
     custo_energia_kwh: 0.07,
-    entrada_minima_th: 20,
-    entrada_minima_usd: 700,
-    lucro_diario_pacote: 1.50,
-    lucro_mensal_pacote: 45.00,
+    entrada_minima_th: 18,
+    entrada_minima_usd: 630,
+    lucro_diario_pacote: 1.35,
+    lucro_mensal_pacote: 40.5,
     roi_anual: 77,
     breakeven_meses: 15.5,
     breakeven_defi_meses: 13.6,
@@ -71,7 +71,7 @@ export const BusinessModelDashboard: React.FC<BusinessModelDashboardProps> = ({
   });
 
   const [btcPrice, setBtcPrice] = useState<number>(45000);
-  const [purchaseTH, setPurchaseTH] = useState<string>('20');
+  const [purchaseTH, setPurchaseTH] = useState<string>('18');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -148,7 +148,7 @@ export const BusinessModelDashboard: React.FC<BusinessModelDashboardProps> = ({
       }));
       
       setSuccessMessage(`Successfully purchased ${th} TH for $${cost} USDC!`);
-      setPurchaseTH('20');
+      setPurchaseTH('18');
     } catch (err: any) {
       setError(err.message || 'Failed to purchase TH');
     } finally {
@@ -260,7 +260,7 @@ export const BusinessModelDashboard: React.FC<BusinessModelDashboardProps> = ({
             <label>Quantidade de TH:</label>
             <input
               type="number"
-              placeholder="20"
+              placeholder="18"
               value={purchaseTH}
               onChange={(e) => setPurchaseTH(e.target.value)}
               min={params.entrada_minima_th}

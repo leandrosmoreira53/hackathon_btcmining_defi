@@ -8,6 +8,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "./cbBTCMiningToken.sol";
 import "./ChainlinkOracle.sol";
+import "./AaveIntegration.sol";
 
 contract MiningPool is Ownable, ReentrancyGuard, Pausable {
     using SafeERC20 for IERC20;
@@ -34,6 +35,7 @@ contract MiningPool is Ownable, ReentrancyGuard, Pausable {
     cbBTCMiningToken public miningToken;
     ChainlinkOracle public oracle;
     IERC20 public cbBTC;
+    AaveIntegration public aaveIntegration;
     
     mapping(uint256 => Pool) public pools;
     mapping(uint256 => mapping(address => UserInfo)) public userInfo;
@@ -42,25 +44,41 @@ contract MiningPool is Ownable, ReentrancyGuard, Pausable {
     uint256 public constant PRECISION = 1e18;
     uint256 public constant REWARD_PRECISION = 1e12;
     
+    // cbBTC reward distribution
+    uint256 public cbBTCRewardPool;
+    uint256 public lastDistributionTime;
+    uint256 public dailyRewardRate = 1e18; // 1 cbBTC per day per 20 TH (adjustable)
+    uint256 public totalHashrateStaked;
+    mapping(address => uint256) public pendingCbBTCRewards;
+    mapping(address => uint256) public lastCbBTCClaimTime;
+    
     event PoolCreated(uint256 indexed poolId, string name, uint256 rewardRate);
     event Staked(address indexed user, uint256 indexed poolId, uint256 amount);
     event Unstaked(address indexed user, uint256 indexed poolId, uint256 amount);
     event RewardsClaimed(address indexed user, uint256 indexed poolId, uint256 amount);
     event PoolUpdated(uint256 indexed poolId, uint256 newRewardRate);
     event HashRateUpdated(uint256 indexed poolId, uint256 newHashRate);
+    event CbBTCRewardsDistributed(uint256 totalAmount, uint256 timestamp);
+    event CbBTCRewardsClaimed(address indexed user, uint256 amount);
+    event CbBTCRewardPoolFunded(uint256 amount);
+    event DailyRewardRateUpdated(uint256 newRate);
     
     constructor(
         address _miningToken,
         address _oracle,
-        address _cbBTC
+        address _cbBTC,
+        address _aaveIntegration
     ) {
         require(_miningToken != address(0), "MiningPool: invalid mining token");
         require(_oracle != address(0), "MiningPool: invalid oracle");
         require(_cbBTC != address(0), "MiningPool: invalid cbBTC token");
+        require(_aaveIntegration != address(0), "MiningPool: invalid aave integration");
         
         miningToken = cbBTCMiningToken(_miningToken);
         oracle = ChainlinkOracle(_oracle);
         cbBTC = IERC20(_cbBTC);
+        aaveIntegration = AaveIntegration(_aaveIntegration);
+        lastDistributionTime = block.timestamp;
     }
     
     function createPool(
@@ -143,6 +161,179 @@ contract MiningPool is Ownable, ReentrancyGuard, Pausable {
         cbBTC.safeTransfer(msg.sender, amount);
         
         emit Unstaked(msg.sender, poolId, amount);
+    }
+    
+    // cbBTC Reward Distribution Functions
+    function fundCbBTCRewardPool(uint256 amount) external onlyOwner {
+        require(amount > 0, "MiningPool: amount must be greater than 0");
+        cbBTC.safeTransferFrom(msg.sender, address(this), amount);
+        cbBTCRewardPool += amount;
+        emit CbBTCRewardPoolFunded(amount);
+    }
+    
+    function distributeDailyCbBTCRewards() external onlyOwner {
+        require(block.timestamp >= lastDistributionTime + 1 days, "MiningPool: distribution too early");
+        require(cbBTCRewardPool > 0, "MiningPool: no rewards to distribute");
+        require(totalHashrateStaked > 0, "MiningPool: no hashrate staked");
+        
+        uint256 timeSinceLastDistribution = block.timestamp - lastDistributionTime;
+        uint256 rewardAmount = (dailyRewardRate * timeSinceLastDistribution) / 1 days;
+        
+        if (rewardAmount > cbBTCRewardPool) {
+            rewardAmount = cbBTCRewardPool;
+        }
+        
+        // Distribute proportionally to all stakers
+        for (uint256 poolId = 0; poolId < poolCount; poolId++) {
+            Pool storage pool = pools[poolId];
+            if (pool.totalStaked > 0 && pool.active) {
+                uint256 poolHashrate = pool.totalHashRate;
+                uint256 poolReward = (rewardAmount * poolHashrate) / totalHashrateStaked;
+                
+                // Distribute to users in this pool
+                _distributeCbBTCToPool(poolId, poolReward);
+            }
+        }
+        
+        cbBTCRewardPool -= rewardAmount;
+        lastDistributionTime = block.timestamp;
+        
+        emit CbBTCRewardsDistributed(rewardAmount, block.timestamp);
+    }
+    
+    function _distributeCbBTCToPool(uint256 poolId, uint256 totalReward) internal {
+        Pool storage pool = pools[poolId];
+        
+        // Calculate reward per staked token
+        uint256 rewardPerToken = (totalReward * REWARD_PRECISION) / pool.totalStaked;
+        
+        // Note: In a real implementation, you'd need to iterate through all users
+        // For efficiency, we'll update rewards when users interact with the contract
+        pool.accRewardPerShare += rewardPerToken;
+    }
+    
+    function claimCbBTCRewards(uint256 poolId) external nonReentrant whenNotPaused {
+        require(poolId < poolCount, "MiningPool: invalid pool ID");
+        
+        UserInfo storage user = userInfo[poolId][msg.sender];
+        require(user.amount > 0, "MiningPool: no stake found");
+        
+        Pool storage pool = pools[poolId];
+        
+        uint256 pendingCbBTC = (user.amount * pool.accRewardPerShare) / REWARD_PRECISION - user.rewardDebt;
+        require(pendingCbBTC > 0, "MiningPool: no cbBTC rewards to claim");
+        
+        user.rewardDebt = (user.amount * pool.accRewardPerShare) / REWARD_PRECISION;
+        lastCbBTCClaimTime[msg.sender] = block.timestamp;
+        
+        cbBTC.safeTransfer(msg.sender, pendingCbBTC);
+        
+        emit CbBTCRewardsClaimed(msg.sender, pendingCbBTC);
+    }
+    
+    function getPendingCbBTCRewards(uint256 poolId, address user) external view returns (uint256) {
+        require(poolId < poolCount, "MiningPool: invalid pool ID");
+        
+        Pool storage pool = pools[poolId];
+        UserInfo storage userStake = userInfo[poolId][user];
+        
+        if (userStake.amount == 0) {
+            return 0;
+        }
+        
+        return (userStake.amount * pool.accRewardPerShare) / REWARD_PRECISION - userStake.rewardDebt;
+    }
+    
+    function updateDailyRewardRate(uint256 newRate) external onlyOwner {
+        dailyRewardRate = newRate;
+        emit DailyRewardRateUpdated(newRate);
+    }
+    
+    function updateTotalHashrateStaked() external onlyOwner {
+        uint256 total = 0;
+        for (uint256 i = 0; i < poolCount; i++) {
+            total += pools[i].totalHashRate;
+        }
+        totalHashrateStaked = total;
+    }
+    
+    // Aave Integration Functions
+    function enableAutoAaveDeposits(uint256 poolId, uint256 percentage) external onlyOwner {
+        require(poolId < poolCount, "MiningPool: invalid pool ID");
+        require(percentage <= 100, "MiningPool: invalid percentage");
+        
+        Pool storage pool = pools[poolId];
+        // Store the auto-deposit percentage for this pool (would need additional storage)
+        
+        emit PoolUpdated(poolId, percentage);
+    }
+    
+    function depositToAave(uint256 amount) external onlyOwner {
+        require(amount > 0, "MiningPool: amount must be greater than 0");
+        require(cbBTC.balanceOf(address(this)) >= amount, "MiningPool: insufficient cbBTC balance");
+        
+        // Approve cbBTC to Aave Integration contract
+        cbBTC.safeApprove(address(aaveIntegration), amount);
+        
+        // Deposit to Aave
+        aaveIntegration.depositToAave(amount);
+        
+        emit CbBTCRewardPoolFunded(amount);
+    }
+    
+    function withdrawFromAave(uint256 amount) external onlyOwner {
+        require(amount > 0, "MiningPool: amount must be greater than 0");
+        
+        // Withdraw from Aave
+        aaveIntegration.withdrawFromAave(amount);
+        
+        emit CbBTCRewardsClaimed(address(this), amount);
+    }
+    
+    function claimAaveYield() external onlyOwner {
+        // Claim yield from Aave integration
+        aaveIntegration.claimYield();
+        
+        // The yield will be distributed as mining tokens
+        emit RewardsClaimed(address(this), 0, 0);
+    }
+    
+    function autoDepositToAave(uint256 poolId) external onlyOwner {
+        require(poolId < poolCount, "MiningPool: invalid pool ID");
+        
+        Pool storage pool = pools[poolId];
+        require(pool.active, "MiningPool: pool is not active");
+        
+        // Calculate amount to deposit (e.g., 70% of pool's cbBTC balance)
+        uint256 poolBalance = cbBTC.balanceOf(address(this));
+        uint256 depositAmount = (poolBalance * 70) / 100; // 70% auto-deposit
+        
+        if (depositAmount > 0) {
+            cbBTC.safeApprove(address(aaveIntegration), depositAmount);
+            aaveIntegration.depositToAave(depositAmount);
+            
+            emit CbBTCRewardPoolFunded(depositAmount);
+        }
+    }
+    
+    function getAavePositionData() external view returns (
+        uint256 totalCollateralBase,
+        uint256 totalDebtBase,
+        uint256 availableBorrowsBase,
+        uint256 currentLiquidationThreshold,
+        uint256 ltv,
+        uint256 healthFactor
+    ) {
+        return aaveIntegration.getAaveAccountData();
+    }
+    
+    function getAaveYieldBalance(address user) external view returns (uint256) {
+        return aaveIntegration.getYieldBalance(user);
+    }
+    
+    function updateAaveIntegration(address newAaveIntegration) external onlyOwner {
+        require(newAaveIntegration != address(0), "MiningPool: invalid aave integration");
+        aaveIntegration = AaveIntegration(newAaveIntegration);
     }
     
     function claimRewards(uint256 poolId) external nonReentrant whenNotPaused {
